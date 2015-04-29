@@ -77,13 +77,14 @@ var gauge = function(parent){
   };
 
   this.gaugeValue = 0;
-  this.arrowColor = '#1e98e4'
+  //this.arrowColor = '#1e98e4'
   this.arrowLength = 170;
   this.labelMargin = 5;
   this.tickMargin = 15;
   this.tickSize = 5;
   this.startAngle = 180 - 30;
   this.endAngle = 360 + 30;
+  this.gaugeThick = 3;
   this.data = {
     colors:[
       0x00ff0, 0x0000ff
@@ -127,7 +128,7 @@ var gauge = function(parent){
     return this;
   };
   this.setValue = function(value) {
-    this.gaugeValue = value;
+    this.gaugeValue = value/100;
     return this;
   };
   
@@ -156,24 +157,29 @@ var gauge = function(parent){
     this.endAngle  = a;
     return this;
   }
+  this.setArrowLength = function(al){
+    this.arrowLength = al;
+    return this;
+  }
+   this.setGaugeThick = function(t){
+    this.gaugeThick = t;
+    return this;
+  }
   this.render = function(){
     var rad=(Math.PI/180);
    
     var svgNS = "http://www.w3.org/2000/svg";
     var svg = document.createElementNS(svgNS, "svg");
-    svg.setAttributeNS(null,'style', 'border: 1px solid black');
     svg.setAttributeNS(null,'class', 'gauge');
 
     var g1 = document.createElementNS(svgNS,"g");       
-    
+   
     parent.appendChild(svg);
-    cw = svg.clientWidth;
-    ch = svg.clientHeight;
+    
 
     arrowThick = 5;
     arrowBaseRad = 10;
 
-    g1.setAttribute("transform", "translate(" +cw/2 + "," +ch/2 + ")");
     svg.appendChild(g1);
 
     angleFrom =this.startAngle* rad;
@@ -184,7 +190,7 @@ var gauge = function(parent){
     k = this.data.colorScales.length/ len;
    
     for (i =1 ; i < this.data.colorScales.length; i++){
-      d = arc( this.gaugeRadius-3,this.gaugeRadius,angleFrom  + len*this.data.colorScales[i-1] ,angleFrom + len*this.data.colorScales[i]);
+      d = arc( this.gaugeRadius-this.gaugeThick,this.gaugeRadius,angleFrom  + len*this.data.colorScales[i-1] ,angleFrom + len*this.data.colorScales[i]);
       arc1 = document.createElementNS(svgNS,"path");
       arc1.setAttribute('d', d);
       arc1.style.fill = this.data.colors[i-1];
@@ -199,7 +205,7 @@ var gauge = function(parent){
       d = tick( this.gaugeRadius + this.tickMargin, this.gaugeRadius+this.tickMargin+this.tickSize, angle);
       line2 = document.createElementNS(svgNS,"path");
       line2.setAttribute('d', d);
-      line2.style.stroke = 'red';
+      line2.setAttribute('class','gauge-tick');
       g1.appendChild(line2);
 
       _tickText = tickText(this.gaugeRadius +this.tickMargin+ this.tickSize, angleFrom + len*(i/total));
@@ -208,8 +214,8 @@ var gauge = function(parent){
       text2.setAttribute('x', _tickText.x);
       text2.setAttribute('y', _tickText.y);
       text2.textContent = this.data.labels[i];
-      text2.style.fill = 'red';
-   
+      text2.setAttribute('class','gauge-label');
+      
       g1.appendChild(text2);
       var w = text2.getComputedTextLength();
       var h = text2.getBBox().height;
@@ -234,15 +240,29 @@ var gauge = function(parent){
     cir.setAttribute('cx', '0');
     cir.setAttribute('cy', '0');
     cir.setAttribute('r', arrowBaseRad);
-    cir.style.fill = this.arrowColor;
+    cir.setAttribute('class','gauge-arrow');
     g1.appendChild(cir);
 
     arrow = document.createElementNS(svgNS,"path");
     arrow.setAttribute('d', 'M0,'+arrowThick+'L'+this.arrowLength+',0L0,-'+arrowThick);
-    
-    arrow.style.fill = this.arrowColor;
+    arrow.setAttribute('class','gauge-arrow');
+    console.log(this.gaugeValue ,len);
+    arrow.setAttribute('transform','rotate('+(this.startAngle + (this.endAngle - this.startAngle)*this.gaugeValue)+')');
     g1.appendChild(arrow);
-   
+ 
+    rect = g1.getBBox();
+    svgRect = svg.getBBox();
+    cw = svg.clientWidth || svg.getBoundingClientRect().width;
+    ch = svg.clientHeight || svg.getBoundingClientRect().height;/*
+
+    bg =  document.createElementNS(svgNS,"rect");
+    bg.setAttribute('width','100%');
+    bg.setAttribute('height','100%');
+    svg.appendChild(bg  );*/
+    console.log(svgRect,rect);
+    console.log(svg.getBoundingClientRect());
+    g1.setAttribute("transform", "translate("+ ( cw/2 - rect.x - rect.width/2)  + "," +   (ch/2-rect.y- rect.height/2 ) + ")");  
+
     console.log('drawn');
   }
   

@@ -1,0 +1,23 @@
+svg{
+  border: 1px solid black;
+}
+
+.gauge{
+  width:600px;
+  height:500px;
+  margin: 0;
+  padding: 0;
+}  
+.gauge-arrow{
+  stroke: #1e98e4;
+  fill: #1e98e4 ;
+}
+.gauge-tick{
+  stroke: #666666;
+  stroke-width:2;
+}
+
+.gauge-label{
+  fill: #666666;
+  font-size: 2em;
+}
