@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Nice title</title>
-    <script src="../js/gauge-math.js"></script>
+    <script src="../js/gauge.js"></script>
     
 
   </head>
@@ -12,57 +12,17 @@
         width:400px;
         height:400px;
        }  
-       .gauge-content{
-          transform:translate(50%, 50%);
-       }  
+       
   </style>
   <body>
 <script language="JavaScript">
       window.onload = function(e)
       {
-        
-        var rad=(Math.PI/180);
-       
-        var _arc = gaugeMath.arc(195,200,(180-30) * rad, (360+30) * rad);
-        var _tick = gaugeMath.tick(175,185,(180-30) * rad,'1')
-        var _tickText = gaugeMath.tickText(185,(180-30) * rad,'111')
-      
-        var gauge =  document.querySelector('#gauge-container');
-        var svgNS = "http://www.w3.org/2000/svg";
-        var svg = document.createElementNS(svgNS, "svg");
-        svg.setAttributeNS(null,'style', 'border: 1px solid black');
-        svg.setAttributeNS(null,'class', 'gauge');
-       
-        var g1 = document.createElementNS(svgNS,"g");       
-        var arc1 = document.createElementNS(svgNS,"path");
-        var line1 = document.createElementNS(svgNS,"path");
-        var text1 = document.createElementNS(svgNS,"text");
-       // g1.setAttribute("class", "gauge-content");
-       
-        arc1.setAttribute('d', _arc);
-        arc1.style.fill = "#838383";
-        
-        line1.setAttribute('d', _tick);
-        line1.style.stroke = 'red';
-        
-        text1.setAttribute('x', _tickText.x);
-        text1.setAttribute('y', _tickText.y);
-        text1.textContent = "222";
-        text1.style.fill = 'red';
-        
-        document.querySelector('#gauge-container').appendChild(svg);
-
-        g1.appendChild(arc1);
-        g1.appendChild(line1);
-        g1.appendChild(text1);
-       
-        svg.appendChild(g1);
-        var cw = svg.clientWidth;
-        var ch = svg.clientHeight;
-        
-        g1.setAttribute("transform", "translate(" +cw/2 + "," +cw/2 + ")");
-     
-       
+        var gauge1 =  new gauge(document.querySelector('#gauge-container'))
+                      .setColorScales([0,70,90, 100])
+                      .setColorValues(['#666666', '#ffa500', '#ff0000'])
+                      .setLabels([0,1,2,3,4,5,6,7,8,9,10])
+                      .render();
       }
     </script>  
     <h1>Header</h1>
