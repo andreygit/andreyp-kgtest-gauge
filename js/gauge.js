@@ -76,6 +76,14 @@ var gauge = function(parent){
     return path.join("");
   };
 
+  this.gaugeValue = 0;
+  this.arrowColor = '#1e98e4'
+  this.arrowLength = 170;
+  this.labelMargin = 5;
+  this.tickMargin = 15;
+  this.tickSize = 5;
+  this.startAngle = 180 - 30;
+  this.endAngle = 360 + 30;
   this.data = {
     colors:[
       0x00ff0, 0x0000ff
@@ -103,22 +111,51 @@ var gauge = function(parent){
       this.data.colorScales.push(items[i]/100);
     }
     return this;
-  }
+  };
   this.setColorValues = function(items){
     this.data.colors =[];
     for(i in items){
       this.data.colors.push(items[i]);
     }
     return this;
-  }
+  };
   this.setLabels = function(items){
     this.data.labels =[];
     for(i in items){
       this.data.labels.push(items[i]);
     }
     return this;
+  };
+  this.setValue = function(value) {
+    this.gaugeValue = value;
+    return this;
+  };
+  
+  
+  this.setGaugeRadius = function(r){
+    this.gaugeRadius = r;
+    return this;
+  };
+  this.setTickSize = function(s){
+    this.tickSize = s;
+    return this;
+  };
+  this.setLabelMargin = function(padding){
+    this.labelMargin  = padding;
+    return this;
   }
-
+  this.setTickMargin = function(padding){
+    this.tickMargin  = padding;
+    return this;
+  }
+  this.setStartAngle = function(a){
+    this.startAngle  = a;
+    return this;
+  }
+  this.setEndAngle = function(a){
+    this.endAngle  = a;
+    return this;
+  }
   this.render = function(){
     var rad=(Math.PI/180);
    
@@ -133,17 +170,21 @@ var gauge = function(parent){
     cw = svg.clientWidth;
     ch = svg.clientHeight;
 
-    g1.setAttribute("transform", "translate(" +cw/2 + "," +cw/2 + ")");
+    arrowThick = 5;
+    arrowBaseRad = 10;
 
-    angleFrom = (180 - 30)* rad;
-    angleTo = (360 + 30)* rad;
+    g1.setAttribute("transform", "translate(" +cw/2 + "," +ch/2 + ")");
+    svg.appendChild(g1);
+
+    angleFrom =this.startAngle* rad;
+    angleTo = this.endAngle* rad;
     width = 300;
     height = 300;
     len = (angleTo - angleFrom);
     k = this.data.colorScales.length/ len;
    
     for (i =1 ; i < this.data.colorScales.length; i++){
-      d = arc(width/2-3,width/2,angleFrom + len*this.data.colorScales[i-1] ,angleFrom + len*this.data.colorScales[i]);
+      d = arc( this.gaugeRadius-3,this.gaugeRadius,angleFrom  + len*this.data.colorScales[i-1] ,angleFrom + len*this.data.colorScales[i]);
       arc1 = document.createElementNS(svgNS,"path");
       arc1.setAttribute('d', d);
       arc1.style.fill = this.data.colors[i-1];
@@ -154,25 +195,54 @@ var gauge = function(parent){
     k = (total+1)/len;
 
     for (i =0 ; i < this.data.labels.length; i++){
-      
-      d = tick(width/2, width/2+5,angleFrom + len*(i/total) );
+      angle = angleFrom + len*(i/total);
+      d = tick( this.gaugeRadius + this.tickMargin, this.gaugeRadius+this.tickMargin+this.tickSize, angle);
       line2 = document.createElementNS(svgNS,"path");
       line2.setAttribute('d', d);
       line2.style.stroke = 'red';
       g1.appendChild(line2);
 
-      _tickText = tickText(width/2+5, angleFrom + len*(i/total));
+      _tickText = tickText(this.gaugeRadius +this.tickMargin+ this.tickSize, angleFrom + len*(i/total));
       text2 = document.createElementNS(svgNS,"text");
       text2.setAttribute('d', d);
       text2.setAttribute('x', _tickText.x);
       text2.setAttribute('y', _tickText.y);
       text2.textContent = this.data.labels[i];
       text2.style.fill = 'red';
+   
       g1.appendChild(text2);
+      var w = text2.getComputedTextLength();
+      var h = text2.getBBox().height;
+      _tickText = tickText(this.gaugeRadius  +this.tickMargin +  this.labelMargin+this.tickSize, angleFrom + len*(i/total));
+    
+      delta = rad*10;
+      if (this.tickSize >0 ){
+        
+        text2.setAttribute('x', _tickText.x - w/2 + (w/2) *Math.cos(angle) ) ;
+        text2.setAttribute('y', _tickText.y + h *(1+Math.sin(angle))/4) ;
+       
+      }else{
+        
+        text2.setAttribute('x', _tickText.x - w/2 - (w/2) *Math.cos(angle) ) ;
+        text2.setAttribute('y', _tickText.y - (h) *Math.sin(angle) ) ;
+       
+      }
+      
     }
     
-    svg.appendChild(g1);
+    cir = document.createElementNS(svgNS,"circle");
+    cir.setAttribute('cx', '0');
+    cir.setAttribute('cy', '0');
+    cir.setAttribute('r', arrowBaseRad);
+    cir.style.fill = this.arrowColor;
+    g1.appendChild(cir);
 
+    arrow = document.createElementNS(svgNS,"path");
+    arrow.setAttribute('d', 'M0,'+arrowThick+'L'+this.arrowLength+',0L0,-'+arrowThick);
+    
+    arrow.style.fill = this.arrowColor;
+    g1.appendChild(arrow);
+   
     console.log('drawn');
   }
   

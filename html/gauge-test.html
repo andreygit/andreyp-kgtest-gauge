@@ -9,8 +9,8 @@
   </head>
   <style>
        .gauge{
-        width:400px;
-        height:400px;
+          width:600px;
+          height:400px;
        }  
        
   </style>
@@ -19,9 +19,16 @@
       window.onload = function(e)
       {
         var gauge1 =  new gauge(document.querySelector('#gauge-container'))
+                      .setGaugeRadius(170)
+                      .setStartAngle(180-30)
+                      .setEndAngle(360+30) 
+                      .setTickSize(10)
+                      .setTickMargin(-5)
+                      .setLabelMargin(10)
                       .setColorScales([0,70,90, 100])
                       .setColorValues(['#666666', '#ffa500', '#ff0000'])
-                      .setLabels([0,1,2,3,4,5,6,7,8,9,10])
+                      .setLabels(['orange','green','blue','black','brown','pink','white','yellow','dark blue','red','wow wow'])
+                      .setValue(80)
                       .render();
       }
     </script>  
