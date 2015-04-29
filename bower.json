@@ -1,15 +1,13 @@
 {
   "name": "andreyp-kgtest-gauge",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/andreygit/andreyp-kgtest-gauge",
   "authors": [
     "andreyp <tchaikovsky@inbox.ru>"
   ],
   "license": "MIT",
-  "main":[
+  "main":
     "build/gauge.min.js",
-    "css/gauge.css"
-  ]
   "ignore": [
     
     "node_modules",
@@ -17,6 +15,9 @@
     "test",
     "tests",
     "html",
-    "js"
+    "js",
+    "bower.json",
+    "package.json",
+    "Gruntfile.js",
   ]
 }
