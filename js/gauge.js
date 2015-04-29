@@ -1,5 +1,27 @@
 var gauge = function(parent){
-
+  this.parent = parent;
+  this.gaugeValue = 0;
+  this.arrowLength = 170;
+  this.labelMargin = 5;
+  this.tickMargin = 15;
+  this.tickSize = 5;
+  this.startAngle = 180 - 30;
+  this.endAngle = 360 + 30;
+  this.gaugeThick = 3;
+  this.drawn = false;
+  this.data = {
+    colors:[
+      0x00ff0, 0x0000ff
+    ],
+    colorScales:[
+      0, 50
+    ],
+    labels:[
+      'a',
+      'b',
+      'c',
+    ]
+  };
 
   function arc(innerRadius , outerRadius, startAngle , endAngle) {
 
@@ -76,28 +98,7 @@ var gauge = function(parent){
     return path.join("");
   };
 
-  this.gaugeValue = 0;
-  //this.arrowColor = '#1e98e4'
-  this.arrowLength = 170;
-  this.labelMargin = 5;
-  this.tickMargin = 15;
-  this.tickSize = 5;
-  this.startAngle = 180 - 30;
-  this.endAngle = 360 + 30;
-  this.gaugeThick = 3;
-  this.data = {
-    colors:[
-      0x00ff0, 0x0000ff
-    ],
-    colorScales:[
-      0, 50
-    ],
-    labels:[
-      'a',
-      'b',
-      'c',
-    ]
-  };
+  
   function tickText(innerRadius ,  startAngle) {
     var x0,
         y0;
@@ -105,6 +106,22 @@ var gauge = function(parent){
     y0 = innerRadius * Math.sin(startAngle);    
     return {x: x0, y: y0}
   };
+
+  this.setOptions = function (settings){
+    this.setGaugeRadius(settings.gaugeRadius);
+    this.setGaugeThick(settings.gaugeThick);
+    this.setArrowLength(settings.arrowLength);
+    this.setStartAngle(settings.startAngle);
+    this.setEndAngle(settings.endAngle) ;
+    this.setTickSize(settings.tickSize);
+    this.setTickMargin(settings.tickMargin);
+    this.setLabelMargin(settings.labelMargin);
+    this.setColorScales(settings.colorScales);
+    this.setColorValues(settings.colorValues);
+    this.setLabels(settings.labels);
+    this.setValue(settings.gaugeValue);
+    return this;
+  }
 
   this.setColorScales = function(items){
     this.data.colorScales =[];
@@ -129,6 +146,11 @@ var gauge = function(parent){
   };
   this.setValue = function(value) {
     this.gaugeValue = value/100;
+
+    if (this.arrow != null){
+      this.arrow.setAttribute('transform','rotate('+(this.startAngle + (this.endAngle - this.startAngle)*this.gaugeValue)+')');
+    }
+
     return this;
   };
   
@@ -173,8 +195,7 @@ var gauge = function(parent){
     svg.setAttributeNS(null,'class', 'gauge');
 
     var g1 = document.createElementNS(svgNS,"g");       
-   
-    parent.appendChild(svg);
+    this.parent.appendChild(svg);
     
 
     arrowThick = 5;
@@ -243,30 +264,58 @@ var gauge = function(parent){
     cir.setAttribute('class','gauge-arrow');
     g1.appendChild(cir);
 
-    arrow = document.createElementNS(svgNS,"path");
+    arrow = this.arrow = document.createElementNS(svgNS,"path");
     arrow.setAttribute('d', 'M0,'+arrowThick+'L'+this.arrowLength+',0L0,-'+arrowThick);
     arrow.setAttribute('class','gauge-arrow');
-    console.log(this.gaugeValue ,len);
     arrow.setAttribute('transform','rotate('+(this.startAngle + (this.endAngle - this.startAngle)*this.gaugeValue)+')');
     g1.appendChild(arrow);
  
     rect = g1.getBBox();
     svgRect = svg.getBBox();
     cw = svg.clientWidth || svg.getBoundingClientRect().width;
-    ch = svg.clientHeight || svg.getBoundingClientRect().height;/*
+    ch = svg.clientHeight || svg.getBoundingClientRect().height;
 
-    bg =  document.createElementNS(svgNS,"rect");
-    bg.setAttribute('width','100%');
-    bg.setAttribute('height','100%');
-    svg.appendChild(bg  );*/
-    console.log(svgRect,rect);
-    console.log(svg.getBoundingClientRect());
     g1.setAttribute("transform", "translate("+ ( cw/2 - rect.x - rect.width/2)  + "," +   (ch/2-rect.y- rect.height/2 ) + ")");  
+    this.drawn = true;
 
-    console.log('drawn');
+    return this;
   }
   
   
-}
+};
 
-
+(function ( $ ) {
+  $.fn.jqgauge = function(options){
+    var self = this;
+    this.defaults = {
+           gaugeRadius: 180,
+           gaugeThick: 3,
+           arrowLength: 175,
+           startAngle: 180-30,
+           endAngle:360+30,  
+           tickSize:5,
+           tickMargin:5,
+           labelMargin:5,
+           colorScales:[0,70,90, 100],
+           colorValues:['#666666', '#ffa500', '#ff0000'],
+           labels:['0','1','2','3','4','5','6','7','8','9','10'],
+           gaugeValue:100
+        }
+    this.settings = $.extend( {}, this.defaults, options );
+    this.each(function(){
+        this.instance = new gauge(this).setOptions(self.settings).render();
+    });
+    return this;
+   };
+   $.fn.setValue = function(val){
+    var self = this;
+    self.settings.gaugeValue = val/100;
+    this.each(function(){
+      $(this).find('.gauge-arrow').attr('transform','rotate('+(self.settings.startAngle + (self.settings.endAngle - self.settings.startAngle)*self.settings.gaugeValue)+')');
+      
+    });
+    
+    return this; 
+   }
+             
+}( jQuery ));

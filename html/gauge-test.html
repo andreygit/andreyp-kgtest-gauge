@@ -4,21 +4,25 @@
     <meta charset="utf-8">
     <title>Nice title</title>
     <link rel="stylesheet" type="text/css" href="../css/gauge.css">
-    <script src="../js/gauge.js"></script>
     
-
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../js/gauge.js"></script>
   </head>
   <style>
-       
+       .gauge-2 .gauge-label{
+         
+          font-size: 1em;
+        }
   </style>
   <body>
-<script language="JavaScript">
+  <script language="JavaScript">
       window.onload = function(e)
       {
+       
         var gauge1 =  new gauge(document.querySelector('#gauge-container'))
                       .setGaugeRadius(180)
                       .setGaugeThick(3)
-                      .setArrowLength(175)
+                      .setArrowLength(185)
                       .setStartAngle(180-30)
                       .setEndAngle(360+ 30) 
                       .setTickSize(5)
@@ -29,12 +33,76 @@
                       .setLabels(['0','1','2','3','4','5','6','7','8','9','10'])
                       .setValue(100)
                       .render();
+        gauge1.setValue(50);
+        
+        var gauge2 =  new gauge(document.querySelector('#gauge-container'))
+                      .setGaugeRadius(100)
+                      .setGaugeThick(30)
+                      .setArrowLength(60)
+                      .setStartAngle(180-30)
+                      .setEndAngle(360+ 30) 
+                      .setTickSize(5)
+                      .setTickMargin(5)
+                      .setLabelMargin(10)
+                      .setColorScales([0,10,30,70,90, 100])
+                      .setColorValues(['#666666','#F44336','#9C27B0', '#ffa500', '#ff0000'])
+                      .setLabels(['apple','goole','microsoft','adobe','grunt','javascript'])
+                      .setValue(90)
+                      .render();
+
+        var gauge3 =  new gauge(document.querySelector('#gauge-container'))
+                      .setGaugeRadius(150)
+                      .setGaugeThick(3)
+                      .setArrowLength(175)
+                      .setStartAngle(180+30)
+                      .setEndAngle(360- 30) 
+                      .setTickSize(50)
+                      .setTickMargin(-25)
+                      .setLabelMargin(10)
+                      .setColorScales([0,70,90, 100])
+                      .setColorValues(['#666666', '#ffa500', '#ff0000'])
+                      .setLabels(['0','1','2','3','4','5'])
+                      .setValue(25)
+                      .render();
+
+        var gauge4 =  new gauge(document.querySelector('#gauge-container'))
+                      .setGaugeRadius(180)
+                      .setGaugeThick(3)
+                      .setArrowLength(160)
+                      .setStartAngle(180-30)
+                      .setEndAngle(360+ 30) 
+                      .setTickSize(-5)
+                      .setTickMargin(-5)
+                      .setLabelMargin(-10)
+                      .setColorScales([0,70,90, 100])
+                      .setColorValues(['#666666', '#ffa500', '#ff0000'])
+                      .setLabels(['0','1','2','3','4','5','6','7','8','9','10'])
+                      .setValue(60)
+                      .render();              
+
+
+       $('.gauge-2').jqgauge({
+         gaugeRadius: 180,
+         gaugeThick: 15,
+         arrowLength: 175,
+         startAngle: 270,
+         endAngle:360+30,  
+         tickSize:-15,
+         tickMargin:-15,
+         labelMargin:-15,
+         colorScales:[0,40,70,90, 100],
+         colorValues:['#666666','#00ff00', '#ffa500', '#ff0000'],
+         labels:['low','10','20','3','90','100','fast'],
+         gaugeValue:100
+      }).setValue(10); 
+  
       }
     </script>  
+
     <h1>Header</h1>
     <div id="gauge-container">
-   
     </div>
-    
+    <div class="gauge-2"></div>
+    <div class="gauge-2"></div>
 </body>
 </html>
