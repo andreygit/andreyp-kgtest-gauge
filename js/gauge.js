@@ -189,10 +189,10 @@ var gauge = function(parent){
    
     for (i =1 ; i < this.data.colorScales.length; i++){
       d = arc( this.gaugeRadius-this.gaugeThick,this.gaugeRadius,angleFrom  + len*this.data.colorScales[i-1] ,angleFrom + len*this.data.colorScales[i]);
-      arc1 = document.createElementNS(svgNS,"path");
-      arc1.setAttribute('d', d);
-      arc1.style.fill = this.data.colors[i-1];
-      g1.appendChild(arc1);
+      arcEl = document.createElementNS(svgNS,"path");
+      arcEl.setAttribute('d', d);
+      arcEl.style.fill = this.data.colors[i-1];
+      g1.appendChild(arcEl);
     }
 
     total = this.data.labels.length - 1;
@@ -201,46 +201,46 @@ var gauge = function(parent){
     for (i =0 ; i < this.data.labels.length; i++){
       angle = angleFrom + len*(i/total);
       d = tickLine( this.gaugeRadius + this.tickMargin, this.gaugeRadius+this.tickMargin+this.tickSize, angle);
-      line2 = document.createElementNS(svgNS,"path");
-      line2.setAttribute('d', d);
-      line2.setAttribute('class','gauge-tick');
-      g1.appendChild(line2);
+      lineEl = document.createElementNS(svgNS,"path");
+      lineEl.setAttribute('d', d);
+      lineEl.setAttribute('class','gauge-tick');
+      g1.appendChild(lineEl);
 
       _tickText = tickText(this.gaugeRadius +this.tickMargin+ this.tickSize, angleFrom + len*(i/total));
-      text2 = document.createElementNS(svgNS,"text");
-      text2.setAttribute('d', d);
-      text2.setAttribute('x', _tickText.x);
-      text2.setAttribute('y', _tickText.y);
-      text2.textContent = this.data.labels[i];
-      text2.setAttribute('class','gauge-label');
+      textEl = document.createElementNS(svgNS,"text");
+      textEl.setAttribute('d', d);
+      textEl.setAttribute('x', _tickText.x);
+      textEl.setAttribute('y', _tickText.y);
+      textEl.textContent = this.data.labels[i];
+      textEl.setAttribute('class','gauge-label');
       
-      g1.appendChild(text2);
-      var w = text2.getComputedTextLength();
-      var h = text2.getBBox().height;
+      g1.appendChild(textEl);
+      var w = textEl.getComputedTextLength();
+      var h = textEl.getBBox().height;
       _tickText = tickText(this.gaugeRadius  +this.tickMargin +  this.labelMargin+this.tickSize, angleFrom + len*(i/total));
     
       delta = rad*10;
       if (this.tickSize >0 ){
-        text2.setAttribute('x', _tickText.x - w/2 + (w/2) *Math.cos(angle) ) ;
-        text2.setAttribute('y', _tickText.y + h *(1+Math.sin(angle))/4) ;
+        textEl.setAttribute('x', _tickText.x - w/2 + (w/2) *Math.cos(angle) ) ;
+        textEl.setAttribute('y', _tickText.y + h *(1+Math.sin(angle))/4) ;
       }else{
-        text2.setAttribute('x', _tickText.x - w/2 - (w/2) *Math.cos(angle) ) ;
-        text2.setAttribute('y', _tickText.y - (h) *Math.sin(angle) ) ;
+        textEl.setAttribute('x', _tickText.x - w/2 - (w/2) *Math.cos(angle) ) ;
+        textEl.setAttribute('y', _tickText.y - (h) *Math.sin(angle) ) ;
       }
     }
     
-    cir = document.createElementNS(svgNS,"circle");
-    cir.setAttribute('cx', '0');
-    cir.setAttribute('cy', '0');
-    cir.setAttribute('r', arrowBaseRad);
-    cir.setAttribute('class','gauge-arrow');
-    g1.appendChild(cir);
+    circleEl = document.createElementNS(svgNS,"circle");
+    circleEl.setAttribute('cx', '0');
+    circleEl.setAttribute('cy', '0');
+    circleEl.setAttribute('r', arrowBaseRad);
+    circleEl.setAttribute('class','gauge-arrow');
+    g1.appendChild(circleEl);
 
-    arrow = this.arrow = document.createElementNS(svgNS,"path");
-    arrow.setAttribute('d', 'M0,'+arrowThick+'L'+this.arrowLength+',0L0,-'+arrowThick);
-    arrow.setAttribute('class','gauge-arrow');
-    arrow.setAttribute('transform','rotate('+(this.startAngle + (this.endAngle - this.startAngle)*this.gaugeValue)+')');
-    g1.appendChild(arrow);
+    arrowEl = this.arrow = document.createElementNS(svgNS,"path");
+    arrowEl.setAttribute('d', 'M0,'+arrowThick+'L'+this.arrowLength+',0L0,-'+arrowThick);
+    arrowEl.setAttribute('class','gauge-arrow');
+    arrowEl.setAttribute('transform','rotate('+(this.startAngle + (this.endAngle - this.startAngle)*this.gaugeValue)+')');
+    g1.appendChild(arrowEl);
  
     rect = g1.getBBox();
     svgRect = svg.getBBox();
@@ -274,11 +274,14 @@ if (window.jQuery) {
              gaugeValue:100
           }
       this.settings = $.extend( {}, this.defaults, options );
+
       this.each(function(){
-          this.instance = new gauge(this).setOptions(self.settings).render();
+        this.instance = new gauge(this).setOptions(self.settings).render();
       });
+
       return this;
      };
+
      $.fn.setValue = function(val){
       var self = this;
       self.settings.gaugeValue = val/100;

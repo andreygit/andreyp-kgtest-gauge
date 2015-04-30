@@ -78,21 +78,20 @@
                       .setValue(60)
                       .render();              
 
-
-       $('.gauge-2').jqgauge({
-         gaugeRadius: 180,
-         gaugeThick: 15,
-         arrowLength: 175,
-         startAngle: 270,
-         endAngle:360+30,  
-         tickSize:-15,
-         tickMargin:-15,
-         labelMargin:-15,
-         colorScales:[0,40,70,90, 100],
-         colorValues:['#666666','#00ff00', '#ffa500', '#ff0000'],
-         labels:['low','10','20','3','90','100','fast'],
-         gaugeValue:100
-      }).setValue(10); 
+        $('.gauge-2').jqgauge({
+                      gaugeRadius: 180,
+                      gaugeThick: 15,
+                      arrowLength: 175,
+                      startAngle: 270,
+                      endAngle:360+30,  
+                      tickSize:-15,
+                      tickMargin:-15,
+                      labelMargin:-15,
+                      colorScales:[0,40,70,90, 100],
+                      colorValues:['#666666','#00ff00', '#ffa500', '#ff0000'],
+                      labels:['low','10','20','3','90','100','fast'],
+                      gaugeValue:100
+        }).setValue(10); 
   
       }
     </script>  
