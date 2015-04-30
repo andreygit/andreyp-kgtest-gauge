@@ -9,7 +9,6 @@
   "main":
     "build/gauge.min.js",
   "ignore": [
-    
     "node_modules",
     "bower_components",
     "test",
@@ -18,6 +17,6 @@
     "js",
     "bower.json",
     "package.json",
-    "Gruntfile.js",
+    "Gruntfile.js"
   ]
 }
